@@ -19,14 +19,14 @@
                     <h2>Inicio de Sesión</h2>
                     <div class="inputbox">
                         <ion-icon name="person-outline"></ion-icon>
-                        <input type="text" asp-for="Credential.Username" required/>
-                        <label asp-for="Credential.Username">Usuario: </label>
+                        <input name="usernameTextBox" type="text" asp-for="Credential.Username" required/>
+                        <label name="usernameLb" asp-for="Credential.Username">Usuario: </label>
                     </div>
                     <span class="text-danger" asp-validation-for="Credential.Username"></span>
                     <div class="inputbox">
                         <ion-icon name="lock-closed-outline"></ion-icon>
-                        <input type="password" asp-for="Credential.Password" required/>
-                        <label asp-for="Credential.Password">Contraseña: </label>
+                        <input name="passwordTextBox" type="password" asp-for="Credential.Password" required/>
+                        <label name="passwordLb" asp-for="Credential.Password">Contraseña: </label>
                     </div>
                     <span class="text-danger" asp-validation-for="Credential.Password"></span>
                     <input type="submit" class="btn btn-primary" value="Iniciar Sesión"/>
