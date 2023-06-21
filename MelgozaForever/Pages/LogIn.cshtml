@@ -1,7 +1,7 @@
 ﻿@page
 @model LogInModel
 @{
-    ViewData["Title"] = "MelgozaForever";
+    ViewData["Title"] = "Log In";
 }
 
 <!DOCTYPE html>
@@ -13,27 +13,24 @@
 <body>
     <section class="login-form">
         <div class="form-box">
-            @if(Model.Error != null && Model.Error != Services.ErrorCode.Success)
-            {
-                // send an alert on javascript
-                <script>alert("asdas")</script>
-            }
             <div class="form-value">
-                <form method="POST">
+                <form method="post" asp-page="LogIn">
                     <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                     <h2>Inicio de Sesión</h2>
-                    <div class="inputbox">
+                    <div class="inputbox" id="usernameInput">
                         <ion-icon name="person-outline"></ion-icon>
-                        <input name="usernameTextBox" type="text" asp-for="Credential.Username" required/>
-                        <label name="usernameLb" asp-for="Credential.Username">Usuario: </label>
+                        <input name="Username" type="text" required />
+                        <label for="usernameInput">Usuario: </label>
                     </div>
-                    <span class="text-danger" asp-validation-for="Credential.Username"></span>
-                    <div class="inputbox">
+                    <span class="text-danger"></span>
+                    <div class="inputbox passwordInput">
                         <ion-icon name="lock-closed-outline"></ion-icon>
-                        <input name="passwordTextBox" type="password" asp-for="Credential.Password" required/>
-                        <label name="passwordLb" asp-for="Credential.Password">Contraseña: </label>
+                        <input name="Password" type="password" required />
+                        <label for="passwordInput">Contraseña: </label>
                     </div>
-                    <span class="text-danger" asp-validation-for="Credential.Password"></span>
+                    <span class="text-danger">@Model.Message</span>
+                    <br />
+                    <br />
                     <input type="submit" class="btn btn-primary" value="Iniciar Sesión"/>
                 </form>
             </div>

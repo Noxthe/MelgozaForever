@@ -26,7 +26,7 @@ namespace Services
             {
                 using (var client = new HttpClient())
                 {
-                    var logInUrl = string.Format("{0}/auth/customer", ApiUrlBase);
+                    var logInUrl = string.Format("{0}/auth/employee", ApiUrlBase);
                     var logInEequestBody = new StringContent(JsonSerializer.Serialize(credentials), Encoding.UTF8, "application/json");
                     var logInResponseMessage = client.PostAsync(logInUrl, logInEequestBody).Result;
 
@@ -55,7 +55,7 @@ namespace Services
                                 response.error = errorResponse;
                                 if (logInResponseMessage.StatusCode == Unauthorized)
                                 {
-                                    response.error.Code = ErrorCode.InvalidData;
+                                    response.error.Code = ErrorCode.InvalidCredentials;
                                 }
                                 else
                                 {

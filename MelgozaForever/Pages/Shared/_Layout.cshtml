@@ -20,10 +20,22 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Usuarios</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Productos</a>
+                        </li>
+                    </ul>
+                </div>
+                <span>¡Bienvenido, <b>@Model.Username</b>!</span>
+                <div>
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark logout-button" asp-page="Index" asp-page-handler="Logout">
+                                <ion-icon class="logout-icon" name="exit"></ion-icon>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -38,13 +50,15 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - MelgozaForever - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2023 - MelgozaForever
         </div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

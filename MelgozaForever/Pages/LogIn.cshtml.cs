@@ -9,7 +9,10 @@ namespace MelgozaForever.Pages
     public class LogInModel : PageModel
     {
         [BindProperty]
-        public Credential Credential { get; set; }
+        public string Username { get; set; }
+        [BindProperty]
+        public string Password { get; set; }
+        public string Message { get; set; }
 
         private readonly ILogger<LogInModel> _logger;
         public ILogInProvider _login { get; set; }
@@ -23,8 +26,14 @@ namespace MelgozaForever.Pages
 
         public void OnGet()
         {
-            
-
+            if(HttpContext.Session != null)
+            {
+                var username = HttpContext.Session.GetString("username");
+                if (username != null)
+                {
+                    Response.Redirect("Index");
+                }
+            }
         }
         private void SetUpLabels()
         {
@@ -33,15 +42,15 @@ namespace MelgozaForever.Pages
         private bool CheckFields()
         {
             bool areValid = true;
-            if (Credential.Username == null || Credential.Username == "")
+            if (Username == null || Username == "")
             {
                 areValid = false;
-                ModelState.AddModelError("Credential.Username", "Username is required");
+                ModelState.AddModelError("Username", "Username is required");
             }
-            else if (Credential.Password == null || Credential.Password == "")
+            else if (Password == null || Password == "")
             {
                 areValid = false;
-                ModelState.AddModelError("Credential.Password", "Password is required");
+                ModelState.AddModelError("Password", "Password is required");
             }
             return areValid;
         }
@@ -56,27 +65,36 @@ namespace MelgozaForever.Pages
 
         public void OnPost()
         {
-            Console.WriteLine(Credential.Username + " " + Credential.Password);
-            if (_login != null && !String.IsNullOrEmpty(Credential.Username) && !String.IsNullOrEmpty(Credential.Password))
+            if (_login != null && !String.IsNullOrEmpty(Username) && !String.IsNullOrEmpty(Password))
             {
-                var logInCredential = new LogInCredentials(Credential.Username, Credential.Password);
+                var logInCredential = new LogInCredentials(Username, Password);
                 var logInResult = _login.LogIn(logInCredential);
                 if (logInResult.error.Code == ErrorCode.Success)
                 {
-                    Request.HttpContext.Session.SetString("login", Credential.Username);
+                    Message = "Bienvenido";
+                    Request.HttpContext.Session.SetString("username", Username);
                     Request.HttpContext.Session.SetString("token", logInResult.token);
+                    Response.Redirect("Index");
+                }
+                else
+                {
+                    switch(logInResult.error.Code)
+                    {
+                        case ErrorCode.InvalidCredentials:
+                            Message = "Credenciales invalidas";
+                            break;
+
+                        default:
+                            Message = string.Format("Ocurrió un error ({0})", logInResult.error.Code);
+                            break;
+                    }
                 }
                 this.Error = logInResult.error.Code;
             }
+            else
+            {
+                Message = "Campos invalidos";
+            }
         }
-    }
-   
-    public class Credential
-    {
-        [Required]
-        public string? Username { get; set; }
-        [Required]
-        [DataType(DataType.Password)]
-        public string? Password { get; set; }
     }
 }
