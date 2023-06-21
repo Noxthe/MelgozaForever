@@ -37,45 +37,51 @@ namespace Services
                             var response = logInResponseMessage.Content.ReadFromJsonAsync<LogInResponse>().Result;
                             if (response != null)
                             {
-                                var userDataResponseMessage = client.GetAsync(logInUrl).Result;
-                                if(userDataResponseMessage != null)
+                                response.error.Code = ErrorCode.Success;
+                            }
+                            else
+                            {
+                                response = new LogInResponse();
+                                response.error.Code = ErrorCode.ServerInternalError;
+                            }
+                            return response;
+                        }
+                        else
+                        {
+                            var response = new LogInResponse();
+                            var errorResponse = logInResponseMessage.Content.ReadFromJsonAsync<Error>().Result;
+                            if (errorResponse != null)
+                            {
+                                response.error = errorResponse;
+                                if (logInResponseMessage.StatusCode == Unauthorized)
                                 {
-                                    if(userDataResponseMessage.IsSuccessStatusCode)
-                                    {
-                                        var userDataResponse = userDataResponseMessage.Content.ReadFromJsonAsync<UserData>().Result;
-                                        response.userData = userDataResponse;
-                                        response.error = new Error();
-                                        response.error.Code = ErrorCode.Success;
-                                        return response;
-                                    }
-                                    else if(userDataResponseMessage.StatusCode == BadRequest)
-                                    {
-                                        response.error = new Error();
-
-                                    }
+                                    response.error.Code = ErrorCode.InvalidData;
+                                }
+                                else
+                                {
+                                    response.error.Code = ErrorCode.ServerInternalError;
                                 }
                             }
                             else
                             {
-                                return Error.ServerError;
+                                response.error.Code = ErrorCode.ServerInternalError;
                             }
-                        }
-                        else if (responseMessage.StatusCode == Unauthorized || responseMessage.StatusCode == NotFound)
-                        {
-                            return Error.InvalidCredentials;
-                        }
-                        else if (responseMessage.StatusCode == InternalServerError)
-                        {
-                            return Error.ServerError;
+                            return response;
                         }
                     }
-                    return Error.ConnectionError;
+                    else
+                    {
+                        var response = new LogInResponse();
+                        response.error.Code = ErrorCode.NoResponse;
+                        return response;
+                    }
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error" + e.Message);
-                return Error.ClientError;
+                var response = new LogInResponse();
+                response.error.Code = ErrorCode.ClientError;
+                return response;
             }
         }
     }

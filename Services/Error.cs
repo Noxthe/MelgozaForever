@@ -12,7 +12,8 @@ namespace Services
         InvalidCredentials,
         InvalidData,
         ServerInternalError,
-        ClientError
+        ClientError,
+        NoResponse
     }
 
     public class Error

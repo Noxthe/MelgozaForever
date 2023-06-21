@@ -9,12 +9,11 @@ namespace Services
     public class LogInResponse
     {
         public string? token { get; set; }
-        public UserData? userData { get; set; }
-        public Error? error { get; set; }
+        public Error error { get; set; }
 
         public LogInResponse()
         {
-
+            error = new Error();
         }
     }
 }
