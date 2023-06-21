@@ -3,6 +3,7 @@ using Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<ILogInProvider, LogInWSProvider>();
+builder.Services.AddScoped<IProductsProvider, ProductsWSProvider>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();

@@ -1,0 +1,40 @@
+﻿@page
+@model MelgozaForever.Pages.ProductManagementModel
+@{
+	ViewData["Title"] = "Product Management";
+}
+
+@if(Model.error.Code == Services.ErrorCode.Success)
+{
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Nombre</th>
+				<th>Categoría</th>
+				<th>Precio</th>
+				<th>Cantidad</th>
+				<th>Descripción</th>
+				<th>Talla</th>
+				<th>Objetivo</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var product in Model.productsData)
+			{
+				<tr>
+					<td>@product.name</td>
+					<td>@product.category</td>
+					<td>@product.price</td>
+					<td>@product.stock</td>
+					<td>@product.description</td>
+					<td>@product.size</td>
+					<td>@product.target</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+else
+{
+	<span>@Model.error.Message</span>
+}

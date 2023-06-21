@@ -18,7 +18,8 @@ namespace MelgozaForever.Pages
         public void OnGetLogout()
         {
             HttpContext.Session.Remove("username");
-            Response.Redirect("LogIn");
+            HttpContext.Session.Remove("token");
+			Response.Redirect("LogIn");
         }
     }
 }
