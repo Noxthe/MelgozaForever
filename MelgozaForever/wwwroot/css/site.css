@@ -31,7 +31,7 @@ section {
     align-items: center;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
-/*
+
 .login-form {
     position: fixed !important;
     width: 100%;
@@ -39,7 +39,7 @@ section {
     left: 0;
     z-index: 9;
 }
-*/
+
 h2 {
     font-size: 2em;
     color: #fff;
