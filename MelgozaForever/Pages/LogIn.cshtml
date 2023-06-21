@@ -4,41 +4,30 @@
     ViewData["Title"] = "Log In";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <link rel="stylesheet" href="index.css" />
-        <title>MelgozaForever</title>
-    </head>
-<body>
-    <section class="login-form">
-        <div class="form-box">
-            <div class="form-value">
-                <form method="post" asp-page="LogIn">
-                    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
-                    <h2>Inicio de Sesión</h2>
-                    <div class="inputbox" id="usernameInput">
-                        <ion-icon name="person-outline"></ion-icon>
-                        <input name="Username" type="text" required />
-                        <label for="usernameInput">Usuario: </label>
-                    </div>
-                    <span class="text-danger"></span>
-                    <div class="inputbox passwordInput">
-                        <ion-icon name="lock-closed-outline"></ion-icon>
-                        <input name="Password" type="password" required />
-                        <label for="passwordInput">Contraseña: </label>
-                    </div>
-                    <span class="text-danger">@Model.Message</span>
-                    <br />
-                    <br />
-                    <input type="submit" class="btn btn-primary" value="Iniciar Sesión"/>
-                </form>
-            </div>
+<section class="login-form">
+    <div class="form-box">
+        <div class="form-value">
+            <form method="post" asp-page="LogIn">
+                <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                <h2>Inicio de Sesión</h2>
+                <div class="inputbox" id="usernameInput">
+                    <ion-icon name="person-outline"></ion-icon>
+                    <input name="Username" type="text" value="@Model.Username" required />
+                    <label for="usernameInput">Usuario: </label>
+                </div>
+                <span class="text-danger"></span>
+                <div class="inputbox passwordInput">
+                    <ion-icon name="lock-closed-outline"></ion-icon>
+                    <input name="Password" type="password" required />
+                    <label for="passwordInput">Contraseña: </label>
+                </div>
+                <span class="text-danger">@Model.Message</span>
+                <br />
+                <br />
+                <input type="submit" class="btn btn-primary" value="Iniciar Sesión" />
+            </form>
         </div>
-    </section>
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-</body>
-</html>
+    </div>
+</section>
 
 

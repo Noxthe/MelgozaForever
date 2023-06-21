@@ -16,7 +16,7 @@ namespace Services
         {
             get
             {
-                return "http://m4e.vadam.xyz/api";
+                return "http://localhost:8080/api";
             }
         }
 
@@ -79,6 +79,7 @@ namespace Services
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 var response = new LogInResponse();
                 response.error.Code = ErrorCode.ClientError;
                 return response;
