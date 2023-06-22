@@ -94,7 +94,8 @@
 		</div>
 		<div class="modal fade" id="modifyProductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
-				<div class="modal-content">
+				<form class="modal-content" method="post" asp-page-handler="modify">
+					<input type="text" name="id" id="modify-input-id" style="display: none;">
 					<div class="modal-header">
 						<h1 class="modal-title fs-5" id="exampleModalLabel">Modificar producto</h1>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -102,11 +103,11 @@
 					<div class="modal-body">
 						<div class="input-group mb-3">
 							<span class="input-group-text" id="modify-inputgroup-name">Nombre</span>
-							<input type="text" class="form-control" aria-describedby="modify-inputgroup-name" id="modify-input-name">
+							<input type="text" class="form-control" aria-describedby="modify-inputgroup-name" id="modify-input-name" name="name" required>
 						</div>
 						<div class="input-group mb-3">
-							<label class="input-group-text" for="modify-input-brand">Objetivo</label>
-							<select class="form-select" id="modify-input-brand">
+							<label class="input-group-text" for="modify-input-brand">Marca</label>
+							<select class="form-select" id="modify-input-brand" name="brand">
 								<option selected>Elige...</option>
 								@foreach(var brand in Model.brands)
 								{
@@ -116,44 +117,49 @@
 						</div>
 						<div class="input-group mb-3">
 							<span class="input-group-text" id="modify-inputgroup-category">Categoría</span>
-							<input type="text" class="form-control" aria-describedby="modify-inputgroup-category" id="modify-input-category">
+							<input type="text" class="form-control" aria-describedby="modify-inputgroup-category" id="modify-input-category" name="category" required>
 						</div>
 						<div class="input-group mb-3">
 							<span class="input-group-text" id="modify-inputgroup-description">Descripción</span>
-							<textarea class="form-control" aria-describedby="modify-inputgroup-description" id="modify-texarea-description"></textarea>
+							<textarea class="form-control" aria-describedby="modify-inputgroup-description" id="modify-texarea-description" name="description" required></textarea>
 						</div>
 						<div class="input-group mb-3">
 							<span class="input-group-text" id="modify-inputgroup-price">Precio</span>
-							<input type="text" class="form-control" aria-describedby="modify-inputgroup-price" id="modify-input-price">
+							<input type="text" class="form-control" aria-describedby="modify-inputgroup-price" id="modify-input-price" name="price" required>
 						</div>
 						<div class="input-group mb-3">
 							<span class="input-group-text" id="modify-inputgroup-stock">Cantidad</span>
-							<input type="text" class="form-control" aria-describedby="modify-inputgroup-price" id="modify-input-stock">
+							<input type="text" class="form-control" aria-describedby="modify-inputgroup-stock" id="modify-input-stock" name="stock" required>
 						</div>
 						<div class="input-group mb-3">
 							<span class="input-group-text" id="modify-inputgroup-size">Talla</span>
-							<input type="text" class="form-control" aria-describedby="modify-inputgroup-size" id="modify-input-size">
+							<input type="text" class="form-control" aria-describedby="modify-inputgroup-size" id="modify-input-size" name="size" required>
 						</div>
 						<div class="input-group mb-3">
 							<label class="input-group-text" for="modify-input-target">Objetivo</label>
-							<select class="form-select" id="modify-input-target">
+							<select class="form-select" id="modify-input-target" name="target" required>
 								<option selected>Elige...</option>
 								<option value="1">Hombre</option>
 								<option value="2">Mujer</option>
 								<option value="3">Unisex</option>
 							</select>
 						</div>
+						<div class="input-group mb-3">
+							<label class="input-group-text" for="modify-input-image">Imagen</label>
+							<input type="file" class="form-control" id="modify-input-image" name="image">
+						</div>
 					</div>
 					<div class="modal-footer">
+						<span id="modify-form-message" class="text-danger"></span>
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-						<button type="button" class="btn btn-warning">Guardar cambios</button>
+						<button type="submit" class="btn btn-warning" id="modify-form-submit">Guardar cambios</button>
 					</div>
-				</div>
+				</form>
 			</div>
 		</div>
 		<div class="modal fade" id="registerProductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
-				<div class="modal-content">
+				<form class="modal-content" method="post" asp-page-handler="register">
 					<div class="modal-header">
 						<h1 class="modal-title fs-5" id="exampleModalLabel">Registrar producto</h1>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -161,11 +167,11 @@
 					<div class="modal-body">
 						<div class="input-group mb-3">
 							<span class="input-group-text" id="register-inputgroup-name">Nombre</span>
-							<input type="text" class="form-control" aria-describedby="register-inputgroup-name" id="register-input-name">
+							<input type="text" class="form-control" aria-describedby="register-inputgroup-name" id="register-input-name" name="name" required>
 						</div>
 						<div class="input-group mb-3">
-							<label class="input-group-text" for="register-input-brand">Objetivo</label>
-							<select class="form-select" id="register-input-brand">
+							<label class="input-group-text" for="register-input-brand">Marca</label>
+							<select class="form-select" id="register-input-brand" name="brand" required>
 								<option selected>Elige...</option>
 								@foreach (var brand in Model.brands)
 								{
@@ -175,39 +181,44 @@
 						</div>
 						<div class="input-group mb-3">
 							<span class="input-group-text" id="register-inputgroup-category">Categoría</span>
-							<input type="text" class="form-control" aria-describedby="register-inputgroup-category" id="register-input-category">
+							<input type="text" class="form-control" aria-describedby="register-inputgroup-category" id="register-input-category" name="category" required>
 						</div>
 						<div class="input-group mb-3">
 							<span class="input-group-text" id="register-inputgroup-description">Descripción</span>
-							<textarea class="form-control" aria-describedby="register-inputgroup-description" id="register-texarea-description"></textarea>
+							<textarea class="form-control" aria-describedby="register-inputgroup-description" id="register-texarea-description" name="description" required></textarea>
 						</div>
 						<div class="input-group mb-3">
 							<span class="input-group-text" id="register-inputgroup-price">Precio</span>
-							<input type="text" class="form-control" aria-describedby="register-inputgroup-price" id="register-input-price">
+							<input type="text" class="form-control" aria-describedby="register-inputgroup-price" id="register-input-price" name="price" required>
 						</div>
 						<div class="input-group mb-3">
 							<span class="input-group-text" id="register-inputgroup-stock">Cantidad</span>
-							<input type="text" class="form-control" aria-describedby="register-inputgroup-price" id="register-input-stock">
+							<input type="text" class="form-control" aria-describedby="register-inputgroup-stock" id="register-input-stock" name="stock" required>
 						</div>
 						<div class="input-group mb-3">
 							<span class="input-group-text" id="register-inputgroup-size">Talla</span>
-							<input type="text" class="form-control" aria-describedby="register-inputgroup-size" id="register-input-price">
+							<input type="text" class="form-control" aria-describedby="register-inputgroup-size" id="register-input-size" name="size" required>
 						</div>
 						<div class="input-group mb-3">
 							<label class="input-group-text" for="inputGroupSelect01">Objetivo</label>
-							<select class="form-select" id="inputGroupSelect01">
+							<select class="form-select" id="inputGroupSelect01" name="target" required>
 								<option selected>Elige...</option>
 								<option value="1">Hombre</option>
 								<option value="2">Mujer</option>
 								<option value="3">Unisex</option>
 							</select>
 						</div>
+						<div class="input-group mb-3">
+							<label class="input-group-text" for="register-input-image">Imagen</label>
+							<input type="file" class="form-control" id="register-input-image" name="image" required>
+						</div>
 					</div>
 					<div class="modal-footer">
+						<span id="register-form-message" class="text-danger"></span>
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-						<button type="button" class="btn btn-success">Registrar</button>
+						<button type="submit" class="btn btn-success" id="register-form-submit">Registrar</button>
 					</div>
-				</div>
+				</form>
 			</div>
 		</div>
 	}

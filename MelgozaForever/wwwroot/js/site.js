@@ -61,6 +61,44 @@ function checkPasswordStrength(password) {
     return true;
 }
 
+function validateTextInput(input, minLen, maxLen, message, messageSpan) {
+    let category = $(input).val();
+    let valid = validateTextAlpha(category, maxLen, minLen, true);
+    if (valid) {
+        $(input).removeClass('is-invalid');
+        if (message && messageSpan) {
+            $(messageSpan).text('');
+        }
+        return true;
+    }
+    else {
+        $(input).addClass('is-invalid');
+        if (message && messageSpan) {
+            $(messageSpan).text(message);
+        }
+        return false;
+    }
+}
+
+function validateNumberInput(input, min, max, message, messageSpan) {
+    let content = $(input).val();
+    console.log(typeof content === "undefined");
+    if (typeof content === "undefined" || isNaN(content) || content < min || content > max) {
+        $(input).addClass('is-invalid');
+        if (message && messageSpan) {
+            $(messageSpan).text(message);
+        }
+        return false;
+    }
+    else {
+        $(input).removeClass('is-invalid');
+        if (message && messageSpan) {
+            $(messageSpan).text('');
+        }
+        return true;
+    }
+}
+
 $('.products-table').on('click', 'tbody tr', function (event) {
     $(this).addClass('table-primary').siblings().removeClass('table-primary');
     $('#modify-button').removeClass('disabled');
@@ -76,6 +114,7 @@ $('.products-table').on('click', 'tbody tr', function (event) {
     let size = $(this).find('td[name="size"]').text();
     let targetId = $(this).find('td[name="target"]').attr('targetId');
 
+    $('#modify-input-id').val(selectedProductId);
     $('#modify-input-name').val(name);
     $('#modify-input-brand').val(brandId).change();
     $('#modify-input-category').val(category);
@@ -122,4 +161,90 @@ $('.pagination-next').click(function (e) {
 $('#search-button').click(function (e) {
     $('#searchInput').val($('#searchTextInput').val());
     $('#paramsForm').submit();
+});
+
+$('#modify-input-name').keyup(function () {
+    validateTextInput(this, 1, 20, 'Nombre inválido: debe ser de entre 1 y 20 caracteres.', '#modify-form-message');
+});
+
+$('#register-input-name').keyup(function () {
+    validateTextInput(this, 1, 20, 'Nombre inválido: debe ser de entre 1 y 20 caracteres.', '#register-form-message');
+});
+
+$('#modify-input-category').keyup(function () {
+    validateTextInput(this, 1, 25, 'Categoría inválida: debe ser de entre 1 y 25 caracteres.', '#modify-form-message');
+});
+
+$('#register-input-category').keyup(function () {
+    validateTextInput(this, 1, 25, 'Categoría inválida: debe ser de entre 1 y 25 caracteres.', '#register-form-message');
+});
+
+$('#modify-texarea-description').keyup(function () {
+    validateTextInput(this, 1, 150, 'Descripción inválida: debe ser de entre 1 y 150 caracteres.', '#modify-form-message');
+});
+
+$('#register-texarea-description').keyup(function () {
+    validateTextInput(this, 1, 150, 'Descripción inválida: debe ser de entre 1 y 150 caracteres.', '#register-form-message');
+});
+
+$('#modify-input-price').keyup(function () {
+    validateNumberInput(this, 1, 999999, 'Precio inválido: debe ser un número entre 0 y 999999.', '#modify-form-message');
+});
+
+$('#register-input-price').keyup(function () {
+    validateNumberInput(this, 1, 999999, 'Precio inválido: debe ser un número entre 0 y 999999.', '#register-form-message');
+});
+
+$('#modify-input-stock').keyup(function () {
+    validateNumberInput(this, 1, 999999, 'Stock inválido: debe ser un número entre 0 y 999999.', '#modify-form-message');
+});
+
+$('#register-input-stock').keyup(function () {
+    validateNumberInput(this, 1, 999999, 'Stock inválido: debe ser un número entre 0 y 999999.', '#register-form-message');
+});
+
+$('#modify-input-size').keyup(function () {
+    validateNumberInput(this, 1, 999999, 'Talle inválido: debe ser un número entre 0 y 999999.', '#modify-form-message');
+});
+
+$('#register-input-size').keyup(function () {
+    validateNumberInput(this, 1, 999999, 'Talle inválido: debe ser un número entre 0 y 999999.', '#register-form-message');
+});
+
+$('#modify-form-submit').click(function (e) {
+    e.preventDefault();
+
+    let valid = true;
+    valid = validateTextInput('#modify-input-name', 1, 20) && valid;
+    valid = validateTextInput('#modify-input-category', 1, 25) && valid;
+    valid = validateTextInput('#modify-texarea-description', 1, 150) && valid;
+    valid = validateNumberInput('modify-input-price', 1, 999999) && valid;
+    valid = validateNumberInput('modify-input-stock', 1, 999999) && valid;
+    valid = validateNumberInput('modify-input-size', 1, 999999) && valid;
+
+    if (valid) {
+        $(this).click();
+    }
+    else {
+        $('#modify-form-message').text('Campos inválidos');
+    }
+});
+
+$('#register-form-submit').click(function (e) {
+    e.preventDefault();
+
+    let valid = true;
+    valid = validateTextInput('#register-input-name', 1, 20) && valid;
+    valid = validateTextInput('#register-input-category', 1, 25) && valid;
+    valid = validateTextInput('#register-texarea-description', 1, 150) && valid;
+    valid = validateNumberInput('register-input-price', 1, 999999) && valid;
+    valid = validateNumberInput('register-input-stock', 1, 999999) && valid;
+    valid = validateNumberInput('register-input-size', 1, 999999) && valid;
+
+    if (valid) {
+        $(this).click();
+    }
+    else {
+        $('#register-form-message').text('Campos inválidos');
+    }
 });

@@ -152,14 +152,134 @@ namespace Services
 			throw new NotImplementedException();
 		}
 
-		public void AddProduct(Product product)
+		public Error AddProduct(string token, Product product)
 		{
-			throw new NotImplementedException();
+			try
+			{
+				using (var client = new HttpClient())
+				{
+					var registerProductUrl = string.Format("{0}/products", ApiUrlBase);
+					var registerProductRequestBody = new StringContent(JsonSerializer.Serialize(product), Encoding.UTF8, "application/json");
+					var registerProductResponseMessage = client.PostAsync(registerProductUrl, registerProductRequestBody).Result;
+
+					if (registerProductResponseMessage != null)
+					{
+						if (registerProductResponseMessage.IsSuccessStatusCode)
+						{
+							var response = registerProductResponseMessage.Content.ReadFromJsonAsync<Error>().Result;
+							if (response != null)
+							{
+								response.Code = ErrorCode.Success;
+							}
+							else
+							{
+								response = new Error();
+								response.Code = ErrorCode.ServerInternalError;
+							}
+							return response;
+						}
+						else
+						{
+							var errorResponse = registerProductResponseMessage.Content.ReadFromJsonAsync<Error>().Result;
+							if (errorResponse != null)
+							{
+								if (registerProductResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
+								{
+									errorResponse.Code = ErrorCode.InvalidCredentials;
+								}
+								else
+								{
+									errorResponse.Code = ErrorCode.ServerInternalError;
+								}
+							}
+							else
+							{
+								errorResponse = new Error();
+								errorResponse.Code = ErrorCode.ServerInternalError;
+							}
+							return errorResponse;
+						}
+					}
+					else
+					{
+						var response = new Error();
+						response.Code = ErrorCode.NoResponse;
+						return response;
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+				var response = new Error();
+				response.Code = ErrorCode.ClientError;
+				return response;
+			}
 		}
 
-		public void UpdateProduct(Product product)
+		public Error UpdateProduct(string token, Product product)
 		{
-			throw new NotImplementedException();
+			try
+			{
+				using (var client = new HttpClient())
+				{
+					var updateProductUrl = string.Format("{0}/products/{1}", ApiUrlBase, product.id);
+					var updateProductRequestBody = new StringContent(JsonSerializer.Serialize(product), Encoding.UTF8, "application/json");
+					var updateProductResponseMessage = client.PutAsync(updateProductUrl, updateProductRequestBody).Result;
+
+					if (updateProductResponseMessage != null)
+					{
+						if (updateProductResponseMessage.IsSuccessStatusCode)
+						{
+							var response = updateProductResponseMessage.Content.ReadFromJsonAsync<Error>().Result;
+							if (response != null)
+							{
+								response.Code = ErrorCode.Success;
+							}
+							else
+							{
+								response = new Error();
+								response.Code = ErrorCode.ServerInternalError;
+							}
+							return response;
+						}
+						else
+						{
+							var errorResponse = updateProductResponseMessage.Content.ReadFromJsonAsync<Error>().Result;
+							if (errorResponse != null)
+							{
+								if (updateProductResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
+								{
+									errorResponse.Code = ErrorCode.InvalidCredentials;
+								}
+								else
+								{
+									errorResponse.Code = ErrorCode.ServerInternalError;
+								}
+							}
+							else
+							{
+								errorResponse = new Error();
+								errorResponse.Code = ErrorCode.ServerInternalError;
+							}
+							return errorResponse;
+						}
+					}
+					else
+					{
+						var response = new Error();
+						response.Code = ErrorCode.NoResponse;
+						return response;
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+				var response = new Error();
+				response.Code = ErrorCode.ClientError;
+				return response;
+			}
 		}
 
 		public void DeleteProduct(string name)

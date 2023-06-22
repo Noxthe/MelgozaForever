@@ -74,7 +74,7 @@ namespace MelgozaForever.Pages
                     Message = "Bienvenido";
                     Request.HttpContext.Session.SetString("username", Username);
                     Request.HttpContext.Session.SetString("token", logInResult.token);
-                    Response.Redirect("Index");
+                    Response.Redirect("ProductManagement");
                 }
                 else
                 {

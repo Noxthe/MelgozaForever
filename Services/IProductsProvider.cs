@@ -11,8 +11,8 @@ namespace Services
 		public (Error, List<Product>?) GetProducts(string token);
 		public (Error, Brand?) GetBrand(string token, int id);
 		public Product GetProduct(string name);
-		public void AddProduct(Product product);
-		public void UpdateProduct(Product product);
+		public Error AddProduct(string token, Product product);
+		public Error UpdateProduct(string token, Product product);
 		public void DeleteProduct(string name);
 	}
 }
