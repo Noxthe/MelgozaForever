@@ -1,40 +1,222 @@
 ﻿@page
+@using Services;
 @model MelgozaForever.Pages.ProductManagementModel
 @{
 	ViewData["Title"] = "Product Management";
 }
 
-@if(Model.error.Code == Services.ErrorCode.Success)
+@if (Model.error != null)
 {
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Nombre</th>
-				<th>Categoría</th>
-				<th>Precio</th>
-				<th>Cantidad</th>
-				<th>Descripción</th>
-				<th>Talla</th>
-				<th>Objetivo</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var product in Model.productsData)
-			{
-				<tr>
-					<td>@product.name</td>
-					<td>@product.category</td>
-					<td>@product.price</td>
-					<td>@product.stock</td>
-					<td>@product.description</td>
-					<td>@product.size</td>
-					<td>@product.target</td>
-				</tr>
-			}
-		</tbody>
-	</table>
+	if (Model.error.Code == Services.ErrorCode.Success)
+	{
+		<form method="post" asp-page-handler="filter" style="display: none;" id="paramsForm">
+			<input type="text" name="search" id="searchInput" value="@Model.search" />
+			<input type="number" name="currentPage" id="pageInput" value="@Model.currentPage" />
+			<input type="submit" id="submitInput" />
+		</form>
+		<div class="product-options-panel">
+			<div class="input-group mb-3">
+				<input type="text" class="form-control" placeholder="Nombre del producto" aria-label="Nombre del producto" id="searchTextInput" value="@Model.search">
+				<button class="btn btn-primary" type="button" id="search-button">Buscar</button>
+			</div>
+			<button type="button" class="btn btn-success" id="register-button" data-bs-toggle="modal" data-bs-target="#registerProductModal">Registrar</button>
+			<button type="button" class="btn btn-warning disabled" id="modify-button" data-bs-toggle="modal" data-bs-target="#modifyProductModal">Modificar</button>
+			<button type="button" class="btn btn-danger disabled" id="delete-button">Eliminar</button>
+		</div>
+		<div class="table-responsive">
+			<table class="table table-striped table-hover products-table">
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>Marca</th>
+						<th>Categoría</th>
+						<th>Precio</th>
+						<th>Cantidad</th>
+						<th>Descripción</th>
+						<th>Talla</th>
+						<th>Objetivo</th>
+					</tr>
+				</thead>
+				<tbody>
+					@for (int i = (Model.currentPage - 1) * 10; i < ((Model.currentPage - 1) * 10) + 10 && i < Model.productsData.Count; i++)
+					{
+						var product = Model.productsData[i];
+						var brand = Model.brands.Find(brand => brand.id == product.brandId);
+						<tr id="@i">
+							<td name="name">@product.name</td>
+							<td name="brand" brandId="@brand.id">@brand.name</td>
+							<td name="category">@product.category</td>
+							<td name="price">@product.price</td>
+							<td name="stock">@product.stock</td>
+							<td name="description">@product.description</td>
+							<td name="size">@product.size</td>
+							@switch ((Product.Target)product.target)
+							{
+								case Product.Target.Men:
+									<td name="target" targetId="1">Hombre</td>
+									break;
+								case Product.Target.Women:
+									<td name="target" targetId="2">Mujer</td>
+									break;
+								case Product.Target.Unisex:
+									<td name="target" targetId="3">Unisex</td>
+									break;
+							}
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+		<div class="pagination-nav">
+			<nav aria-label="Page navigation example">
+				<ul class="pagination">
+					<li class="page-item">
+						<a class="page-link pagination-previous" href="#!" aria-label="Previous">
+							<span aria-hidden="true">&laquo;</span>
+						</a>
+					</li>
+					@for(int i = 1; i <= Model.totalPages; i++)
+					{
+						if(Model.currentPage == i) {
+							<li class="page-item pagination-page active"><a class="page-link" href="#!">@i</a></li>
+						}
+						else {
+							<li class="page-item pagination-page"><a class="page-link" href="#!">@i</a></li>
+						}
+					}
+					<li class="page-item">
+						<a class="page-link pagination-next" href="#!" aria-label="Next">
+							<span aria-hidden="true">&raquo;</span>
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+		<div class="modal fade" id="modifyProductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title fs-5" id="exampleModalLabel">Modificar producto</h1>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="modify-inputgroup-name">Nombre</span>
+							<input type="text" class="form-control" aria-describedby="modify-inputgroup-name" id="modify-input-name">
+						</div>
+						<div class="input-group mb-3">
+							<label class="input-group-text" for="modify-input-brand">Objetivo</label>
+							<select class="form-select" id="modify-input-brand">
+								<option selected>Elige...</option>
+								@foreach(var brand in Model.brands)
+								{
+									<option value="@brand.id">@brand.name</option>
+								}
+							</select>
+						</div>
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="modify-inputgroup-category">Categoría</span>
+							<input type="text" class="form-control" aria-describedby="modify-inputgroup-category" id="modify-input-category">
+						</div>
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="modify-inputgroup-description">Descripción</span>
+							<textarea class="form-control" aria-describedby="modify-inputgroup-description" id="modify-texarea-description"></textarea>
+						</div>
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="modify-inputgroup-price">Precio</span>
+							<input type="text" class="form-control" aria-describedby="modify-inputgroup-price" id="modify-input-price">
+						</div>
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="modify-inputgroup-stock">Cantidad</span>
+							<input type="text" class="form-control" aria-describedby="modify-inputgroup-price" id="modify-input-stock">
+						</div>
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="modify-inputgroup-size">Talla</span>
+							<input type="text" class="form-control" aria-describedby="modify-inputgroup-size" id="modify-input-size">
+						</div>
+						<div class="input-group mb-3">
+							<label class="input-group-text" for="modify-input-target">Objetivo</label>
+							<select class="form-select" id="modify-input-target">
+								<option selected>Elige...</option>
+								<option value="1">Hombre</option>
+								<option value="2">Mujer</option>
+								<option value="3">Unisex</option>
+							</select>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+						<button type="button" class="btn btn-warning">Guardar cambios</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="registerProductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title fs-5" id="exampleModalLabel">Registrar producto</h1>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="register-inputgroup-name">Nombre</span>
+							<input type="text" class="form-control" aria-describedby="register-inputgroup-name" id="register-input-name">
+						</div>
+						<div class="input-group mb-3">
+							<label class="input-group-text" for="register-input-brand">Objetivo</label>
+							<select class="form-select" id="register-input-brand">
+								<option selected>Elige...</option>
+								@foreach (var brand in Model.brands)
+								{
+									<option value="@brand.id">@brand.name</option>
+								}
+							</select>
+						</div>
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="register-inputgroup-category">Categoría</span>
+							<input type="text" class="form-control" aria-describedby="register-inputgroup-category" id="register-input-category">
+						</div>
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="register-inputgroup-description">Descripción</span>
+							<textarea class="form-control" aria-describedby="register-inputgroup-description" id="register-texarea-description"></textarea>
+						</div>
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="register-inputgroup-price">Precio</span>
+							<input type="text" class="form-control" aria-describedby="register-inputgroup-price" id="register-input-price">
+						</div>
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="register-inputgroup-stock">Cantidad</span>
+							<input type="text" class="form-control" aria-describedby="register-inputgroup-price" id="register-input-stock">
+						</div>
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="register-inputgroup-size">Talla</span>
+							<input type="text" class="form-control" aria-describedby="register-inputgroup-size" id="register-input-price">
+						</div>
+						<div class="input-group mb-3">
+							<label class="input-group-text" for="inputGroupSelect01">Objetivo</label>
+							<select class="form-select" id="inputGroupSelect01">
+								<option selected>Elige...</option>
+								<option value="1">Hombre</option>
+								<option value="2">Mujer</option>
+								<option value="3">Unisex</option>
+							</select>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+						<button type="button" class="btn btn-success">Registrar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+	else
+	{
+		<span>@Model.error.Message</span>
+	}
 }
 else
 {
-	<span>@Model.error.Message</span>
+	<span>Ocurrió un error inesperado.</span>
 }

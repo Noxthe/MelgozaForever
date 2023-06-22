@@ -15,13 +15,15 @@ namespace Services
 			Unisex
 		}
 
+		public int id { get; set; }
 		public string? name { get; set; }
 		public string? category { get; set; }
 		public string? description { get; set; }
-		public int price { get; set; }
-		public string? stock { get; set; }
-		public string? size { get; set; }
-		public string? target { get; set; }
+		public float price { get; set; }
+		public int stock { get; set; }
+		public float size { get; set; }
+		public int target { get; set; }
+		public int brandId { get; set; }
 
 		public Product()
 		{

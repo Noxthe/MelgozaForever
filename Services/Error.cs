@@ -11,6 +11,7 @@ namespace Services
         Success,
         InvalidCredentials,
         InvalidData,
+        NotFound,
         ServerInternalError,
         ClientError,
         NoResponse

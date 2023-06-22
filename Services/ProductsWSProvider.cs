@@ -83,6 +83,70 @@ namespace Services
 			}
 		}
 
+		public (Error, Brand?) GetBrand(string token, int id)
+		{
+			var error = new Error();
+			try
+			{
+				using (var client = new HttpClient())
+				{
+					client.DefaultRequestHeaders.Add("Authorization", string.Format("Bearer {0}", token));
+					var brandUrl = string.Format("{0}/brands/{1}", ApiUrlBase, id);
+					var brandResponseMessage = client.GetAsync(brandUrl).Result;
+
+					if (brandResponseMessage != null)
+					{
+						if (brandResponseMessage.IsSuccessStatusCode)
+						{
+							var response = brandResponseMessage.Content.ReadFromJsonAsync<Brand>().Result;
+							if (response != null)
+							{
+								error.Code = ErrorCode.Success;
+								return (error, response);
+							}
+							else
+							{
+								error.Code = ErrorCode.ServerInternalError;
+								return (error, null);
+							}
+						}
+						else
+						{
+							var errorResponse = brandResponseMessage.Content.ReadFromJsonAsync<Error>().Result;
+							if (errorResponse != null)
+							{
+								if (brandResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
+								{
+									errorResponse.Code = ErrorCode.InvalidCredentials;
+								}
+								else
+								{
+									errorResponse.Code = ErrorCode.ServerInternalError;
+								}
+							}
+							else
+							{
+								errorResponse = new Error();
+								errorResponse.Code = ErrorCode.ServerInternalError;
+							}
+							return (errorResponse, null);
+						}
+					}
+					else
+					{
+						error.Code = ErrorCode.NoResponse;
+						return (error, null);
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				error.Code = ErrorCode.ClientError;
+				error.Message = e.Message;
+				return (error, null);
+			}
+		}
+
 		public Product GetProduct(string name)
 		{
 			throw new NotImplementedException();

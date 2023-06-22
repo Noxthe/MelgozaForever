@@ -100,3 +100,52 @@ button {
     font-size: 1em;
     font-weight: 600;
 }
+
+.product-options-panel {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    margin: 25px 0;
+}
+
+.product-options-panel .input-group {
+    display: flex;
+    flex-direction: row;
+    margin-right: 10px;
+}
+
+.product-options-panel .input-group button {
+    width: 10%;
+}
+
+.product-options-panel button {
+    width: 10%;
+}
+
+.product-options-panel button:not(:last-child) {
+    margin-right: 6px;
+}
+
+@media screen and (max-width: 992px) {
+    .product-options-panel .input-group button {
+        width: 20%;
+    }
+
+    .product-options-panel button {
+        width: 20%;
+    }
+}
+
+.products-table {
+    overflow-x: scroll;
+}
+
+.pagination-nav {
+    display: flex;
+    justify-content: center;
+}
+
+#modifyProductModal .input-group-text, #registerProductModal .input-group-text {
+    width: 30%;
+}
