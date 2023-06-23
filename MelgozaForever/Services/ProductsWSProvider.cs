@@ -15,7 +15,7 @@ namespace Services
 		{
 			get
 			{
-				return "http://localhost:8080/api";
+				return "http://m4e.vadam.xyz/api";
 			}
 		}
 
