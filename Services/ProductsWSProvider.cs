@@ -158,6 +158,7 @@ namespace Services
 			{
 				using (var client = new HttpClient())
 				{
+					client.DefaultRequestHeaders.Add("Authorization", string.Format("Bearer {0}", token));
 					var registerProductUrl = string.Format("{0}/products", ApiUrlBase);
 					var registerProductRequestBody = new StringContent(JsonSerializer.Serialize(product), Encoding.UTF8, "application/json");
 					var registerProductResponseMessage = client.PostAsync(registerProductUrl, registerProductRequestBody).Result;
@@ -223,6 +224,7 @@ namespace Services
 			{
 				using (var client = new HttpClient())
 				{
+					client.DefaultRequestHeaders.Add("Authorization", string.Format("Bearer {0}", token));
 					var updateProductUrl = string.Format("{0}/products/{1}", ApiUrlBase, product.id);
 					var updateProductRequestBody = new StringContent(JsonSerializer.Serialize(product), Encoding.UTF8, "application/json");
 					var updateProductResponseMessage = client.PutAsync(updateProductUrl, updateProductRequestBody).Result;
@@ -282,9 +284,69 @@ namespace Services
 			}
 		}
 
-		public void DeleteProduct(string name)
+		public Error DeleteProduct(string token, int id)
 		{
-			throw new NotImplementedException();
+			try
+			{
+				using (var client = new HttpClient())
+				{
+					client.DefaultRequestHeaders.Add("Authorization", string.Format("Bearer {0}", token));
+					var updateProductUrl = string.Format("{0}/products/{1}", ApiUrlBase, id);
+					var updateProductResponseMessage = client.DeleteAsync(updateProductUrl).Result;
+
+					if (updateProductResponseMessage != null)
+					{
+						if (updateProductResponseMessage.IsSuccessStatusCode)
+						{
+							var response = updateProductResponseMessage.Content.ReadFromJsonAsync<Error>().Result;
+							if (response != null)
+							{
+								response.Code = ErrorCode.Success;
+							}
+							else
+							{
+								response = new Error();
+								response.Code = ErrorCode.ServerInternalError;
+							}
+							return response;
+						}
+						else
+						{
+							var errorResponse = updateProductResponseMessage.Content.ReadFromJsonAsync<Error>().Result;
+							if (errorResponse != null)
+							{
+								if (updateProductResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
+								{
+									errorResponse.Code = ErrorCode.InvalidCredentials;
+								}
+								else
+								{
+									errorResponse.Code = ErrorCode.ServerInternalError;
+								}
+							}
+							else
+							{
+								errorResponse = new Error();
+								errorResponse.Code = ErrorCode.ServerInternalError;
+							}
+							return errorResponse;
+						}
+					}
+					else
+					{
+						var response = new Error();
+						response.Code = ErrorCode.NoResponse;
+						return response;
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+				var response = new Error();
+				response.Code = ErrorCode.ClientError;
+				return response;
+			}
 		}
 	}
 }

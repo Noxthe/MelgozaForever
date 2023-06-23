@@ -13,6 +13,6 @@ namespace Services
 		public Product GetProduct(string name);
 		public Error AddProduct(string token, Product product);
 		public Error UpdateProduct(string token, Product product);
-		public void DeleteProduct(string name);
+		public Error DeleteProduct(string token, int id);
 	}
 }

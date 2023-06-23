@@ -83,7 +83,7 @@ namespace MelgozaForever.Pages
 			brands = new List<Brand>();
 			foreach (var product in productsData)
 			{
-				var brandId = product.id;
+				var brandId = product.brandId;
 
 				// check if brand already exists
 				if (brands.All(brand => brand.id != brandId))
@@ -145,6 +145,7 @@ namespace MelgozaForever.Pages
 				var product = new Product();
 				product.id = id;
 				product.name = name;
+				product.category = category;
 				product.brandId = brand;
 				product.description = description;
 				product.price = price;
@@ -185,6 +186,7 @@ namespace MelgozaForever.Pages
 			{
 				var product = new Product();
 				product.name = name;
+				product.category = category;
 				product.brandId = brand;
 				product.description = description;
 				product.price = price;
@@ -206,7 +208,38 @@ namespace MelgozaForever.Pages
 						break;
 
 					default:
-						message = "Ha ocurrido un error, intentelo más tarde";
+						message = "Ha ocurrido un error, intentelo más tarde.";
+						break;
+				}
+
+				PopulateProductsData();
+			}
+		}
+
+		public void OnPostDelete()
+		{
+			Username = HttpContext.Session.GetString("username");
+			if (Username == null)
+			{
+				Response.Redirect("LogIn");
+			}
+			else
+			{
+				var token = HttpContext.Session.GetString("token");
+				var result = _products.DeleteProduct(token, (int)id);
+
+				switch (result.Code)
+				{
+					case ErrorCode.Success:
+						message = "Producto eliminado correctamente";
+						break;
+
+					case ErrorCode.InvalidData:
+						message = "Datos inválidos";
+						break;
+
+					default:
+						message = "Ha ocurrido un error, intentelo más tarde.";
 						break;
 				}
 
